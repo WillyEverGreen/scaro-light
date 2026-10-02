@@ -1,0 +1,32 @@
+# Worker Dockerfile for Render - runs scrapers, feed polling, and background jobs
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements
+COPY backend/requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy backend code
+COPY backend/ ./backend/
+
+# Create volumes for data
+RUN mkdir -p /app/data /app/logs
+
+# Expose port (optional, for health checks)
+EXPOSE 8000
+
+# Set environment
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Worker entry point - runs all background services
+CMD ["python", "-m", "backend.worker_main"]

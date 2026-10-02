@@ -1,0 +1,391 @@
+React Native Mobile App Prompt: SCARO - Supply Chain Risk Intelligence App
+Project Overview
+Build a production-ready React Native mobile app (iOS & Android) that monitors global supply chain risks through real-time news aggregation, AI-powered risk analysis, and interactive visualization. The app connects to an existing Python FastAPI backend.
+
+Core Functionality
+1. Dashboard Screen (Home)
+Real-time Risk Metrics:
+
+Overall risk score (0-1 scale) with color-coded indicator
+Count of overconfidence alerts
+Number of high-risk vendors
+Affected countries count
+Active supply chain events
+System Status Bar:
+
+Backend API connection status
+Database connectivity indicator
+Ollama AI service status
+Display connection state with color-coded indicators
+Recent Events Feed:
+
+Scrollable list of latest supply chain events
+Each event shows: title, category, severity badge (low/medium/high/critical), country flag, timestamp
+Categories: geopolitical, weather, trade_restriction, commodity, vendor, economic
+Pull-to-refresh functionality
+Risk Timeline Chart:
+
+30-day historical risk score trend line chart
+Event count overlay
+Interactive touch gestures for date inspection
+Commodity Status Cards:
+
+Horizontal scrollable cards showing affected commodities (semiconductors, batteries, rare earth metals, etc.)
+Display mention count and average risk score per commodity
+2. Interactive 3D Supply Chain Graph Screen
+3D Force-Directed Graph Visualization:
+
+Node types: vendors, countries, products, events
+Edge types: supplies_to, located_in, affected_by, depends_on
+Color-coded nodes by risk level (green → yellow → red spectrum)
+Node size proportional to importance/centrality
+Pan, zoom, and rotate gestures
+Tap node to view details overlay
+Real-time WebSocket Updates:
+
+Subscribe to /api/graph/ws for live graph changes
+Animate new events appearing
+Update node colors on risk score changes
+Filters:
+
+Toggle node types (show/hide vendors, countries, products, events)
+Risk threshold slider
+Search nodes by name
+3. AI Query Screen (RAG Interface)
+Natural Language Query Input:
+
+Large text input with multiline support
+Voice-to-text integration
+Query history dropdown
+Streaming Response Display:
+
+Markdown rendering for formatted answers
+Real-time streaming text (similar to ChatGPT)
+Loading animation during query processing
+Source Citations:
+
+Collapsible cards showing retrieved documents
+Display: document title, relevance score, snippet preview
+Tap to open full source (if URL available)
+Example Queries:
+
+Pre-populated query chips: "What are the biggest risks in Taiwan?", "Impact of US-China trade war?", "Weather disruptions affecting ports?"
+4. Scraping Control Screen
+Job Management:
+
+Start/stop buttons for scraping jobs
+Job queue status (pending, running, completed, failed)
+Progress bars for active jobs
+Scraping Configuration:
+
+Input fields for search queries
+Country/region filters (multi-select)
+Date range picker
+Search engine selection (Google, Bing, DuckDuckGo, Twitter/X)
+RSS Feed Management:
+
+List of configured feeds with add/remove buttons
+Feed polling status
+Last updated timestamps
+Activity Log:
+
+Real-time scrolling log of scraping events
+Filter by level (info, warning, error)
+Share/export logs functionality
+5. Weather & Alerts Screen
+Port Weather Monitor:
+
+List of major global ports with current weather
+Each port card shows: name, country, temperature, wind speed, precipitation, weather condition icon
+Status badges: normal, warning, critical
+Alert descriptions for severe weather
+Active Alerts Feed:
+
+Push notification-style list of recent alerts
+Categories: weather, trade restrictions, geopolitical events
+Severity color coding
+Dismiss/archive alerts
+6. Trade Restrictions Screen
+Restrictions Database:
+
+Searchable/filterable list of active sanctions, embargoes, export controls
+Source indicators: OFAC (US), EU Sanctions, Export Controls
+Affected country pairs
+Commodity-specific restrictions
+Impact Analysis:
+
+Affected trade routes count
+High-risk country pairs
+Timeline of new restrictions
+7. Risk Analysis Screens
+7a. Overall Risk Score:
+
+Large risk gauge visualization
+Breakdown: fragility index, stability index, event impact, confidence gap
+Trend indicator (increasing/stable/decreasing)
+7b. Vendor Risk:
+
+List of vendors with risk scores
+Country flag, dependency percentage
+Tap for detailed stability/fragility metrics
+7c. Overconfidence Alerts:
+
+List of detected overconfidence situations
+Confidence gap visualization
+Alert levels with explanations
+7d. Ripple Effect Simulator:
+
+Input: select disruption scenario (supplier failure, weather disaster, trade war)
+Select target (vendor/country)
+Severity slider
+Output: affected nodes count, recovery time estimate, recommendations
+8. Settings Screen
+Backend Configuration:
+
+API base URL input
+Connection test button
+Display Preferences:
+
+Dark/light theme toggle
+Chart color schemes
+Font size adjustment
+Notifications:
+
+Enable/disable push notifications
+Alert threshold configuration
+Notification categories selection
+Data Management:
+
+Clear cache button
+Export data functionality
+About/version info
+Technical Stack Requirements
+Frontend (React Native)
+
+- Framework: React Native (latest stable)
+- Navigation: React Navigation v6+
+- State Management: React Query (TanStack Query) for API data
+- UI Components: React Native Paper or NativeBase
+- Charts: react-native-chart-kit or Victory Native
+- 3D Graph: react-native-webview with Three.js/Force Graph (or native implementation)
+- WebSockets: socket.io-client or native WebSocket API
+- Markdown: react-native-markdown-display
+- Icons: react-native-vector-icons (Lucide icons)
+- Theme: next-themes equivalent (react-native-paper theming)
+
+API Integration
+Base URL: http://localhost:8000 (configurable)
+
+Endpoints to Integrate:
+
+Dashboard:
+
+GET /api/dashboard/summary → Risk metrics and recent events
+GET /api/dashboard/timeline?days=30 → Risk history
+GET /api/dashboard/commodities → Commodity status
+GET /api/dashboard/weather → Port weather data
+Graph:
+
+GET /api/graph/full?max_nodes=500 → Full graph data
+WS /api/graph/ws → WebSocket for real-time updates
+GET /api/graph/shortest-path?from={}&to={} → Path analysis
+GET /api/graph/centrality → Node importance scores
+RAG/AI:
+
+POST /api/rag/query → Send natural language query (streaming response)
+GET /api/rag/history → Query history
+Body: {"query": "string", "context_limit": 5, "include_sources": true}
+Scraping:
+
+GET /api/scraping/status → Current scraping status
+POST /api/scraping/start → Start scraping job
+POST /api/scraping/stop-all → Stop all jobs
+GET /api/scraping/activity → Recent activity log
+GET /api/scraping/feeds → RSS feed list
+POST /api/scraping/feeds → Add new feed
+Risk Analysis:
+
+GET /api/risk/score → Overall risk score
+GET /api/risk/overconfidence-alerts → Alerts list
+POST /api/risk/ripple-effect → Simulate disruption
+POST /api/risk/stress-test → Run stress test
+Alerts:
+
+GET /api/alerts/recent?limit=20 → Recent alerts
+GET /api/alerts/active → Active unresolved alerts
+POST /api/alerts/dismiss/{alert_id} → Dismiss alert
+Debug:
+
+GET /health → Health check
+GET /api/debug/stats → System statistics
+Data Models (TypeScript Interfaces)
+
+interface RiskMetrics {
+  overall_risk_score: number;
+  overconfidence_alerts: number;
+  high_risk_vendors: number;
+  affected_countries: number;
+  active_events: number;
+}
+
+interface Event {
+  id: string;
+  title: string;
+  category: 'geopolitical' | 'weather' | 'trade_restriction' | 'commodity' | 'vendor' | 'economic' | 'other';
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  country: string; // ISO 3166-1 alpha-3
+  created_at: string; // ISO datetime
+  description?: string;
+  source_url?: string;
+  risk_score?: number;
+}
+
+interface GraphNode {
+  id: string;
+  label: string;
+  type: 'vendor' | 'country' | 'product' | 'event';
+  properties: Record<string, any>;
+  risk_score?: number;
+  color?: string;
+}
+
+interface GraphLink {
+  source: string;
+  target: string;
+  type: 'supplies_to' | 'located_in' | 'affected_by' | 'depends_on';
+  properties: Record<string, any>;
+  weight: number;
+}
+
+interface QueryResponse {
+  query: string;
+  answer: string;
+  sources: Source[];
+  confidence: number;
+  processing_time_ms: number;
+}
+
+interface Source {
+  id: string;
+  title: string;
+  url?: string;
+  type: string;
+  relevance_score: number;
+  snippet: string;
+}
+
+interface WeatherStatus {
+  port: string;
+  country: string;
+  temperature_c: number;
+  wind_speed_kmh: number;
+  precipitation_mm: number;
+  condition: string;
+  status: 'normal' | 'warning' | 'critical';
+  alert?: string;
+}
+
+Design Requirements
+Color Scheme:
+Light Mode: White background, gray-100 cards, blue-600 accents
+Dark Mode: Gray-900 background, gray-800 cards, blue-400 accents
+Risk Colors:
+Low (0-0.33): #22c55e (green)
+Medium (0.33-0.66): #f59e0b (amber)
+High (0.66-0.85): #f97316 (orange)
+Critical (0.85-1.0): #ef4444 (red)
+Typography:
+Headers: Bold, 20-24px
+Body: Regular, 14-16px
+Small text: 12px
+Monospace for logs/technical data
+Layout:
+Bottom tab navigation (5 tabs: Dashboard, Graph, Query, Scraping, Settings)
+Pull-to-refresh on all data screens
+Loading skeletons for async data
+Error boundaries with retry buttons
+Key Features to Implement
+Offline Support:
+
+Cache recent dashboard data
+Queue queries when offline
+Sync when connection restored
+Push Notifications:
+
+Critical alerts (risk score > 0.85)
+New high-severity events
+Scraping job completion
+Configurable notification preferences
+Performance Optimizations:
+
+Virtualized lists for large datasets
+Lazy loading for graph nodes
+Debounced search inputs
+Image caching for country flags
+Accessibility:
+
+Screen reader support
+High contrast mode
+Font scaling
+Touch target sizes (min 44x44px)
+Error Handling:
+
+Network timeout handling (30s)
+Retry logic with exponential backoff
+User-friendly error messages
+Fallback to cached data
+Authentication (Future Enhancement)
+Currently, the backend has no authentication. If needed later:
+
+JWT token-based auth
+Secure storage (react-native-keychain)
+Biometric login option
+Session management
+Platform-Specific Considerations
+iOS:
+
+Follow Apple HIG
+Use iOS native date/time pickers
+Haptic feedback on interactions
+Support iPhone/iPad layouts
+Android:
+
+Follow Material Design 3
+Use Android native components where appropriate
+Support gesture navigation
+Handle back button properly
+Testing Requirements
+Unit tests for utility functions
+Integration tests for API calls
+E2E tests for critical flows (Detox or Appium)
+Visual regression tests
+Deployment
+App Store and Google Play store release
+Over-the-air updates (CodePush)
+Environment configuration (.env files)
+Production API URL configuration
+Development Phases
+Phase 1 (MVP):
+
+Dashboard screen with real API integration
+Basic navigation structure
+Settings screen
+Dark/light theme
+Phase 2:
+
+3D graph visualization
+AI query interface with streaming
+Weather alerts screen
+Phase 3:
+
+Scraping control interface
+Trade restrictions database
+Risk analysis tools
+Phase 4:
+
+Push notifications
+Offline support
+Performance optimization
+Polish and bug fixes
+Additional Context:
+This app monitors global supply chain risks by scraping news from multiple sources (Google, Bing, DuckDuckGo, Twitter), analyzing content with AI (Ollama/Qwen3), storing in PostgreSQL/Neo4j/Qdrant databases, and detecting overconfidence patterns that indicate hidden supply chain vulnerabilities. The backend uses FastAPI (Python), and the original web frontend is Next.js 14 with TypeScript.

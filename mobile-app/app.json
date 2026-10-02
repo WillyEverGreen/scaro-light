@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "Edgecase",
+    "slug": "edgecase",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/edgecase-logo.png",
+    "scheme": "edgecase",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.edgecase.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0F172A",
+        "foregroundImage": "./assets/images/edgecase-logo.png"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "package": "com.edgecase.app"
+    },
+    "web": {
+      "output": "single",
+      "favicon": "./assets/images/edgecase-logo.png"
+    },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-logo.png",
+          "imageWidth": 280,
+          "resizeMode": "contain",
+          "backgroundColor": "#0F172A",
+          "dark": {
+            "backgroundColor": "#0F172A"
+          }
+        }
+      ],
+      "expo-web-browser"
+    ],
+    "experiments": {
+      "reactCompiler": true
+    }
+  }
+}

@@ -1,0 +1,74 @@
+# Render deployment configuration
+# Used for one-click deployment from GitHub
+
+services:
+  - type: web
+    name: edgecase-api
+    env: python
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: DATABASE_URL
+        sync: false
+      - key: NEO4J_URI
+        sync: false
+      - key: NEO4J_PASSWORD
+        sync: false
+      - key: QDRANT_HOST
+        sync: false
+      - key: QDRANT_API_KEY
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: NVIDIA_API_KEY
+        sync: false
+      - key: NVIDIA_BASE_URL
+        sync: false
+      - key: NVIDIA_MODEL
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: "false"
+
+  - type: worker
+    name: edgecase-workers
+    env: python
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && python worker_main.py
+    plan: starter
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: DATABASE_URL
+        sync: false
+      - key: NEO4J_URI
+        sync: false
+      - key: NEO4J_PASSWORD
+        sync: false
+      - key: QDRANT_HOST
+        sync: false
+      - key: QDRANT_API_KEY
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: NVIDIA_API_KEY
+        sync: false
+      - key: NVIDIA_BASE_URL
+        sync: false
+      - key: NVIDIA_MODEL
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: "false"
+      - key: FEED_POLL_INTERVAL
+        value: "5"

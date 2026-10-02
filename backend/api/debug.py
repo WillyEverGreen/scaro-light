@@ -32,12 +32,19 @@ class DataSearchRequest(BaseModel):
 @router.get("/stats")
 async def get_pipeline_stats():
     """Get pipeline statistics."""
-    from data.scheduler import scheduler
-    
-    return {
-        "scheduler": scheduler.stats.to_dict(),
-        "data_store": scheduler.data_store.get_stats(),
-    }
+    try:
+        from data.scheduler import scheduler
+        
+        return {
+            "scheduler": scheduler.stats.to_dict() if hasattr(scheduler, "stats") else {},
+            "data_store": scheduler.data_store.get_stats() if hasattr(scheduler.data_store, "get_stats") else {},
+        }
+    except Exception as e:
+        return {
+            "scheduler": {"total_runs": 0, "is_running": False},
+            "data_store": {"total_items": 0, "by_source": {}, "by_category": {}, "by_country": {}},
+            "warning": str(e)
+        }
 
 
 @router.get("/items")

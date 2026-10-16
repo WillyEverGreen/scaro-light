@@ -113,8 +113,8 @@ ollama serve
 
 Ready to deploy? See the complete deployment guide for Vercel + Neon + Render:
 
-- 📖 **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** — Step-by-step production setup (Vercel frontend + Neon DB + Render workers)
-- ✅ **[DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md)** — Pre-deployment checklist and quick reference
+- 📖 **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - Step-by-step production setup (Vercel frontend + Neon DB + Render workers)
+- ✅ **[DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md)** - Pre-deployment checklist and quick reference
 
 ### Quick Deploy Summary
 
